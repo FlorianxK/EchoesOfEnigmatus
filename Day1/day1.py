@@ -1,9 +1,28 @@
+from collections import deque
 from typing import *
 
 def dayOne():
+    maxNum = 0
+
+    def eni(N,EXP,MOD):
+        score = 1
+        arr = deque([])
+        for _ in range(EXP):
+            score = (score*N)%MOD
+            arr.appendleft(str(score))
+        return int(''.join(arr))
+
     #read
-    with open("Day1/1.txt") as file:
-        pass
+    with open("Day1/1_1.txt") as file:
+        for line in file:
+            h = {}
+            vals = [ x.split('=') for x in line.strip().split() ]
+            for letter,num in vals:
+                h[letter] = int(num)
+            res = eni(h['A'],h['X'],h['M']) + eni(h['B'],h['Y'],h['M']) + eni(h['C'],h['Z'],h['M'])
+            maxNum = max(maxNum,res)
+    
+    return maxNum
 
 def dayOne2():
     pass
