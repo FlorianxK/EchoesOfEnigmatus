@@ -25,14 +25,32 @@ def dayOne():
     return maxNum
 
 def dayOne2():
-    pass
+    maxNum = 0
+
+    def eni(N,EXP,MOD):
+        val = ""
+        for i in range(5):
+            val += str( pow(N,EXP-i,MOD) )
+        return int(val)
+
+    #read
+    with open("Day1/1_2.txt") as file:
+        for line in file:
+            h = {}
+            vals = [ x.split('=') for x in line.strip().split() ]
+            for letter,num in vals:
+                h[letter] = int(num)
+            res = eni(h['A'],h['X'],h['M']) + eni(h['B'],h['Y'],h['M']) + eni(h['C'],h['Z'],h['M'])
+            maxNum = max(maxNum,res)
+    
+    return maxNum
 
 def dayOne3():
     pass
 
 def main():
     print("Hallo")
-    print(dayOne(), "ist die Lösung von Teil 1")
+    #print(dayOne(), "ist die Lösung von Teil 1")
     print(dayOne2(), "ist die Lösung von Teil 2")
     print(dayOne3(), "ist die Lösung von Teil 3")
 
