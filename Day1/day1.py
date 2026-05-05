@@ -46,11 +46,43 @@ def dayOne2():
     return maxNum
 
 def dayOne3():
-    pass
+    maxNum = 0
+
+    def eni(N,EXP,MOD):
+        cycle = []
+        i = 0
+        while True:
+            toAdd = pow(N,EXP-i,MOD)
+            if toAdd not in cycle:
+                cycle.append(toAdd)
+            else:
+                break
+            i += 1
+        boundary = EXP%len(cycle)
+        while pow(N,boundary,MOD) != cycle[0]:
+            boundary += len(cycle)
+        
+        num_cycles = (EXP-boundary)//len(cycle)
+        res = sum(cycle)*num_cycles
+        for i in range(1,boundary+1):
+            res += pow(N,i,MOD)
+        return res
+
+    #read
+    with open("Day1/1_3.txt") as file:
+        for line in file:
+            h = {}
+            vals = [ x.split('=') for x in line.strip().split() ]
+            for letter,num in vals:
+                h[letter] = int(num)
+            res = eni(h['A'],h['X'],h['M']) + eni(h['B'],h['Y'],h['M']) + eni(h['C'],h['Z'],h['M'])
+            maxNum = max(maxNum,res)
+    
+    return maxNum
 
 def main():
     print("Hallo")
-    #print(dayOne(), "ist die Lösung von Teil 1")
+    print(dayOne(), "ist die Lösung von Teil 1")
     print(dayOne2(), "ist die Lösung von Teil 2")
     print(dayOne3(), "ist die Lösung von Teil 3")
 
