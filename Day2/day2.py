@@ -9,8 +9,6 @@ def printTree(root):
             curr = q.popleft()
 
             print(f"{curr.letter} ",end="")
-            if curr.parent:
-                print(f"has parent {curr.parent.letter}: ",end="")
             if curr.left:
                 print(f"l:{curr.left.letter} ",end="")
                 nextQ.append(curr.left)
@@ -113,11 +111,10 @@ def dayTwo():
 
 def dayTwo2():
     class TreeNode:
-        def __init__(self,id,rank,letter,parent=None,left=None,right=None):
+        def __init__(self,id,rank,letter,left=None,right=None):
             self.id = id
             self.rank = rank
             self.letter = letter
-            self.parent = parent
             self.left = left
             self.right = right
 
@@ -132,18 +129,16 @@ def dayTwo2():
                 if curr.left:
                     curr = curr.left
                 else:
-                    curr.left = TreeNode(id,rank,letter,curr)
+                    curr.left = TreeNode(id,rank,letter)
                     break
             else:
                 if curr.right:
                     curr = curr.right
                 else:
-                    curr.right = TreeNode(id,rank,letter,curr)
-                    break        
+                    curr.right = TreeNode(id,rank,letter)
+                    break
     
     def swapNodes(id,l_root,r_root):
-
-        # WHAT IF SWAP IN SAME TREE?
         def find(root):
             q = deque([root])
             while q:
@@ -154,48 +149,14 @@ def dayTwo2():
                     q.append(curr.left)
                 if curr.right:
                     q.append(curr.right)
-            return None
-        
+
         l_found = find(l_root)
         r_found = find(r_root)
-        l_found.left,r_found.left = r_found.left,l_found.left
-        l_found.right,r_found.right = r_found.right,l_found.right
-
-        #both have parent
-        if l_found.parent and r_found.parent:
-            if l_found.parent.left == l_found and r_found.parent.left == r_found:
-                l_found.parent.left,r_found.parent.left = r_found.parent.left,l_found.parent.left
-            elif l_found.parent.right == l_found and r_found.parent.left == r_found:
-                l_found.parent.right,r_found.parent.left = r_found.parent.left,l_found.parent.right
-            
-            elif l_found.parent.left == l_found and r_found.parent.right == r_found:
-                l_found.parent.left,r_found.parent.right = r_found.parent.right,l_found.parent.left
-            elif l_found.parent.right == l_found and r_found.parent.right == r_found:
-                l_found.parent.right,r_found.parent.right = r_found.parent.right,l_found.parent.right
-
-        # if one is root
-        if not l_found.parent or not r_found.parent:
-            l_root,r_root = r_root,l_root
-
-            if l_found.parent:
-                if l_found.parent.left == l_found:
-                    l_found.parent.left = r_found
-                else:
-                    l_found.parent.right = r_found
-                l_found.parent = None
-
-            elif r_found.parent:
-                if r_found.parent.left == r_found:
-                    r_found.parent.left = l_found
-                else:
-                    r_found.parent.right = l_found
-                r_found.parent = None
-
-        l_found.parent,r_found.parent = r_found.parent,l_found.parent
-        return l_root,r_root
+        l_found.rank,r_found.rank = r_found.rank,l_found.rank
+        l_found.letter,r_found.letter = r_found.letter,l_found.letter
     
     #read
-    with open("Day2/2.txt") as file:
+    with open("Day2/2_2.txt") as file:
         for line in file:
             arr = line.strip().split()
             if arr[0] == "ADD":
@@ -215,49 +176,33 @@ def dayTwo2():
                     addNode(r_root,id,r_rank,r_letter)
             elif arr[0] == "SWAP":
                 id = int(arr[1])
-                l_root,r_root = swapNodes(id,l_root,r_root)
+                swapNodes(id,l_root,r_root)
 
-    # find biggest level
-    left_q = deque([l_root])
-    right_q = deque([r_root])
-    level_size = 0
-    fullWord = ""
-    while True:
-        lWord = ""
-        rWord = ""
-        curr_level_size = 0
-        next_left_q = deque([])
-        next_right_q = deque([])
-        while left_q or right_q:
-
-            if left_q:
-                curr = left_q.popleft()
-                curr_level_size += 1
-                lWord += curr.letter
+    # find biggest level of each tree
+    def find_level(root):
+        q = deque([root])
+        word = ""
+        while True:
+            currWord = ""
+            nextQ = deque([])
+            while q:
+                curr = q.popleft()
+                currWord += curr.letter
                 if curr.left:
-                    next_left_q.append(curr.left)
+                    nextQ.append(curr.left)
                 if curr.right:
-                    next_left_q.append(curr.right)
-            if right_q:
-                curr = right_q.popleft()
-                curr_level_size += 1
-                rWord += curr.letter
-                if curr.left:
-                    next_right_q.append(curr.left)
-                if curr.right:
-                    next_right_q.append(curr.right)
-        
-        if curr_level_size > level_size:
-            level_size = curr_level_size
-            fullWord = lWord+rWord
+                    nextQ.append(curr.right)
+            
+            if len(currWord) > len(word):
+                word = currWord
 
-        if not next_left_q and not next_right_q:
-            break
-        else:
-            left_q = next_left_q
-            right_q = next_right_q
+            if nextQ:
+                q = nextQ
+            else:
+                break
+        return word
     
-    return fullWord
+    return find_level(l_root)+find_level(r_root)
 
 def dayTwo3():
     return
