@@ -1,8 +1,8 @@
+from math import lcm
 from typing import *
 
 def dayThree():
     points = []
-    days = 100
     #read
     with open("Day3/3_1.txt") as file:
         for line in file:
@@ -22,10 +22,46 @@ def dayThree():
     return res
 
 def dayThree2():
-    pass
+    points = []
+    #read
+    with open("Day3/3_2.txt") as file:
+        for line in file:
+            x,y = [ int(a.split('=')[1]) for a in line.strip().split() ]
+            points.append( (x,y) )
+
+    days = 0
+    step = 1
+    for x,y in points:
+        mod = x+y-1
+        rem = y-1
+
+        while days%mod != rem:
+            days += step
+
+        step = lcm(step,mod)
+    
+    return days
 
 def dayThree3():
-    pass
+    points = []
+    #read
+    with open("Day3/3_3.txt") as file:
+        for line in file:
+            x,y = [ int(a.split('=')[1]) for a in line.strip().split() ]
+            points.append( (x,y) )
+
+    days = 0
+    step = 1
+    for x,y in points:
+        mod = x+y-1
+        rem = y-1
+
+        while days%mod != rem:
+            days += step
+
+        step = lcm(step,mod)
+    
+    return days
 
 def main():
     print("Hallo")
